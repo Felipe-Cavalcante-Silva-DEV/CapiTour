@@ -21,13 +21,13 @@ Este projeto é um site responsivo para agendamento de serviços turísticos em 
 ### Frontend
 - HTML5
 - CSS3
-- JavaScript (vanilla)
+- JavaScript
 - Responsividade com Flexbox/Grid
 
 ### Backend
 - Python 3.x
 - Flask
-- Firebase Admin SDK (para banco de dados)
+- SQL (Banco de Dados)
 - Mercado Pago SDK
 
 ## 💳 Integração com Mercado Pago
