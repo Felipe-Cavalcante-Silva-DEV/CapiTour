@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Login e Cadastro</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 400px;
+            margin: 40px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+
+        input {
+            margin: 5px 0;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        a {
+            display: block;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            display: inline-block;
+            width: 40%;
+            height: 1px;
+            background: #ccc;
+            vertical-align: middle;
+            margin: 0 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Login</h2>
+
+    <!-- Login com Google -->
+    <a href="{{ url_for('login_google_route') }}">Login com Google</a>
+
+    <div class="divider">ou</div>
+
+    <!-- Login tradicional -->
+    <form id="formLogin">
+        <input type="email" id="emailLogin" placeholder="E-mail" required>
+        <input type="password" id="senhaLogin" placeholder="Senha" required>
+        <button type="submit">Entrar</button>
+    </form>
+
+    <h2>Criar Conta</h2>
+
+    <!-- Cadastro tradicional -->
+    <form id="formCadastro">
+        <input type="text" id="nome" placeholder="Nome completo" required>
+        <input type="email" id="email" placeholder="E-mail" required>
+        <input type="password" id="senha" placeholder="Senha" required>
+        <button type="submit">Cadastrar</button>
+    </form>
+
+    <script>
+        // Função para registrar o usuário
+        document.getElementById('formCadastro').addEventListener('submit', function (e) {
+            e.preventDefault(); // Impede o comportamento padrão do form
+
+            // Captura os valores dos campos
+            const nome = document.getElementById('nome').value;
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
+
+            // Envia os dados para o backend
+            fetch('/registro', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    nome: nome,
+                    email: email,
+                    senha: senha
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.mensagem) {
+                    alert(data.mensagem);  // Exibe mensagem de sucesso
+                } else {
+                    alert(data.erro);  // Exibe erro
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert('Erro ao tentar registrar usuário');
+            });
+        });
+
+        // Função para realizar o login
+        document.getElementById('formLogin').addEventListener('submit', function (e) {
+            e.preventDefault(); // Impede o comportamento padrão do form
+
+            // Captura os valores dos campos
+            const email = document.getElementById('emailLogin').value;
+            const senha = document.getElementById('senhaLogin').value;
+
+            // Envia os dados para o backend
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: email,
+                    senha: senha
+                })
+            })
+            .then(response => {
+                console.log(response);  // Verifique o que está sendo retornado pelo servidor
+                return response.json();
+            })
+            .then(data => {
+                if (data.mensagem) {
+                    alert(data.mensagem);  // Exibe mensagem de sucesso
+                } else {
+                    alert(data.erro);  // Exibe erro
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert('Erro ao tentar registrar usuário');
+            });
+
+        });
+    </script>
+
+</body>
+</html>

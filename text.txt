@@ -1,0 +1,107 @@
+webhook:  49d8a5795636cbb587472b5bbc554da7b6e51b986e650b9ad4d4a2d2bf7f3a05
+
+public key: APP_USR-d26f313c-98c3-43d4-b886-40984adea3a9
+
+access token: APP_USR-2497859079825404-041710-5cc9eeb83958b58644bfc8267ea4c8e3-2392808365
+
+
+senha de app da google : rulp ifyd vfhj osul
+
+
+
+
+
+$env:MP_ACCESS_TOKEN="APP_USR-2497859079825404-041710-5cc9eeb83958b58644bfc8267ea4c8e3-2392808365"
+
+
+
+
+
+conta mercado pago teste vendedor
+TESTUSER1263283261
+4GCcXEoWoC
+
+conta mercaod pago teste comprador
+TESTUSER739350265
+5sm5mjSQqn
+
+
+curl -X POST  https://bfc5-2804-214-4013-f4c-c0ef-b29c-424e-bbd8.ngrok-free.app/webhook -H "Content-Type: application/json" -d '{"id": 134, "status": "approved"}'
+
+
+
+
+https://www.mercadopago.com.br/checkout/v1/payment/redirect/df99f7a6-5118-4319-8252-d144540616f2/congrats/approved/?preference-id=2392808365-a5c92b6b-ceff-48e2-9b2d-effebba39d7d&router-request-id=7c94130e-a80b-4526-96bc-41e8bbb1cdaa&p=8434d61ad71224670a88d890094f32bf
+
+
+
+
+
+
+
+<script>
+                    document.getElementById('pagarBtn').addEventListener('click', async (e) => {
+                        e.preventDefault();
+
+                        // Pegando os dados do formulário
+                        const nome = document.getElementById('nome').value.trim();
+                        const turno = document.getElementById('turno').value;
+                        const data = document.getElementById('data').value;
+                        const quantidade = 1;  // Aqui você pode mudar a lógica para pegar de um campo específico
+                        const observacoes = document.getElementById('observacoes').value;
+
+                        try {
+                            // Enviar requisição para gerar o link de pagamento e pref_id
+                            console.log("Enviando requisição para gerar link de pagamento...");
+                            const res = await fetch("http://127.0.0.1:5000/gerar_link_pagamento", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({
+                                    nome,
+                                    turno,
+                                    data,
+                                    quantidade,
+                                    observacoes
+                                })
+                            });
+
+                            const result = await res.json();
+                            console.log("Resposta do backend:", result);
+
+                            if (result.url) {
+                                // Agora, enviar as informações de agendamento (incluindo o pref_id) para o backend
+                                const agendamentoRes = await fetch("http://127.0.0.1:5000/salvar_agendamento", {
+                                    method: "POST",
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify({
+                                        nome,           // Enviando nome
+                                        turno,          // Enviando turno
+                                        data,           // Enviando data
+                                        quantidade,     // Enviando quantidade
+                                        observacoes,    // Enviando observações
+                                        pref_id: result.pref_id  // Enviando o pref_id gerado
+                                    })
+                                });
+
+                                const agendamentoResult = await agendamentoRes.json();
+                                console.log(agendamentoResult.mensagem);  // Exibindo resposta de sucesso
+
+                                // Verifica se a URL do Mercado Pago foi recebida e redireciona para ela
+                                if (result.url) {
+                                    window.location.href = result.url;  // Redireciona para o link de pagamento
+                                } else {
+                                    console.error("Erro: Link de pagamento não encontrado.");
+                                    alert("Erro ao gerar link de pagamento.");
+                                }
+                            } else {
+                                console.error("Erro ao gerar link de pagamento:", result);
+                                alert("Erro ao gerar link de pagamento.");
+                            }
+
+                        } catch (err) {
+                            console.error("Erro ao gerar link de pagamento:", err);
+                            alert("Erro ao gerar link de pagamento.");
+                        }
+                    });
+
+                </script>
